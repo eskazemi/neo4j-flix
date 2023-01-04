@@ -1,6 +1,6 @@
 from urls import api_router
 from fastapi.middleware.cors import CORSMiddleware
-from app import app
+from src.app import app
 
 app.add_middleware(
     CORSMiddleware,
