@@ -22,6 +22,8 @@ async def on_app_start():
 
 @app.on_event("shutdown")
 async def on_app_shutdown():
+    from src.config import get_setting
+    get_setting.cache_clear()
     """Anything that needs to be done while app shutdown
     """
     pass
