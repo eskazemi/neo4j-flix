@@ -11,7 +11,9 @@ from src.services import (
     MovieService,
     AuthService,
     RatingService,
-    UserService
+    UserService,
+    PeopleService,
+    GenreService
 )
 
 settings = get_setting()
@@ -44,7 +46,9 @@ class Container(containers.DeclarativeContainer):
                                      user_repository=user_repository)
     rate_service = providers.Factory(RatingService,
                                      movie_repository=MovieRepository)
+    genre_service = providers.Factory(GenreService)
     movie_service = providers.Factory(MovieService,
                                       movie_repository=movie_repository)
+    people_service = providers.Factory(PeopleService)
     user_service = providers.Factory(UserService,
                                      user_repository=user_repository)
