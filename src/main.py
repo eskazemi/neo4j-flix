@@ -1,4 +1,4 @@
-from urls import api_router
+from src.urls import api_router
 from fastapi.middleware.cors import CORSMiddleware
 from src.app import app
 
