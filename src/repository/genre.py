@@ -6,6 +6,7 @@ from base_repository import BaseRepository
 
 class GenresRepository(BaseRepository):
 
+    DATABASE = ""
     NODE_NAME = "Genre"
 
     def __init__(self, session_factory: Callable[..., AbstractContextManager[Session]]):

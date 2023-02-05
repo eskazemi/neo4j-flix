@@ -5,6 +5,8 @@ from base_repository import BaseRepository
 
 
 class MovieRepository(BaseRepository):
+
+    DATABASE = ""
     NODE_NAME = "Movie"
 
     def __init__(self, session_factory: Callable[..., AbstractContextManager[Session]]):
