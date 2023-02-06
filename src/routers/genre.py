@@ -20,33 +20,42 @@ genre_routes = APIRouter(
 @inject
 def get_index(service: GenreService = Depends(
     Provide[Container.genre_service])):
-    pass
+    # Create the DAO
+
+    # Get output
+    output = service.all()
+
+    return output
+    # return jsonify(output)
 
 
 @genre_routes.get('/{name}/')
 @inject
 def get_genre(name: str, service: GenreService = Depends(
     Provide[Container.genre_service])):
-
     # Get the Genre
-    pass
+    output = service.find(name)
+
+    return output
+    # return jsonify(output)
 
 
 @genre_routes.get('/<name>/movies')
 @inject
-def get_genre_movies(name, service: MovieService = Depends(
-    Provide[Container.movie_service]
-)):
+def get_genre_movies(name, sort: str = "title",
+                     order: str = 'ASC',
+                     limit: int = 6,
+                     skip: int = 0,
+                     service: MovieService = Depends(
+                         Provide[Container.movie_service]
+                     )):
     # Get User ID from JWT Auth
     # user_id = current_user["sub"] if current_user != None else None
 
     # Get Pagination Values
-    # sort = request.args.get("sort", "title")
-    # order = request.args.get("order", "ASC")
-    # limit = request.args.get("limit", 6, type=int)
-    # skip = request.args.get("skip", 0, type=int)
-
 
     # Get the Genre
-    pass
+    output = service.get_by_genre(name, sort, order, limit, skip, user_id)
 
+    return output
+    # return jsonify(output)
