@@ -3,8 +3,6 @@ from src.config import get_setting
 from src.core.exceptions import (
     AuthError,
     BadRequestError,
-    DuplicatedError,
-    NotFoundError
 )
 import uuid
 from datetime import datetime
@@ -14,10 +12,8 @@ from email_validator import (
     validate_email,
     EmailNotValidError,
 )
-from src.services import UserService
 from src.repository import UserRepository
 from src.models.user import (
-    User,
     UserSignIn,
     UserSignInResponse,
     UserSignUp,
@@ -34,7 +30,7 @@ class AuthService(BaseService):
         super().__init__(user_repository)
 
     async def sign_in(self, user: UserSignIn):
-        user = UserService.authenticate_user(user.email, user.password)
+        user = self.user_repository.authenticate_user(user.email, user.password)
         if not user:
             raise AuthError(
                 detail="Incorrect email or password",
@@ -79,20 +75,9 @@ class AuthService(BaseService):
         del new_user["email"]
         del new_user["password"]
         attributes.update(new_user)
+        return self.user_repository.create_user(attributes, email)
 
-        query_create_new_user = "CREATE (user:User $attributes) RETURN user"
-        with neo4j_driver.session() as session:
-            if UserService.check_user_exists(email):
-                raise DuplicatedError(
-                    detail=f"Operation not permitted, user with email "
-                           f"{email} already exists.",
-                    headers={"WWW-Authenticate": "Bearer"}
-                )
-            new_user_create = session.run(query_create_new_user,
-                                          attributes=attributes)
-            new_user_data = new_user_create.data()[0]["user"]
 
-        return User(**new_user_data)
 
     async def reset_password(self, user_reset_pass: UserResetPassword):
         """Reset User's password using user's email."""
@@ -106,20 +91,8 @@ class AuthService(BaseService):
             raise BadRequestError(
                 detail=f"Not valid email address was provided: '{email}'"
             )
-
-        query_reset_password = """
-            MATCH (user:User) WHERE user.email = $email
-            SET user.hashed_password = $new_password_hash
-            RETURN user
-        """
-        with neo4j_driver.session() as session:
-            """Checking if user exists, if not - raise 404."""
-            if not UserService.check_user_exists(email):
-                raise NotFoundError(detail="User not found")
-
-            """Encrypt new password and update user's property."""
-            new_password_hash = create_password_hash(new_password)
-            session.run(query_reset_password, email=email,
-                        new_password_hash=new_password_hash)
-
-        return {"detail": "Password successfully updated"}
+        result = self.user_repository.reset_password(email, new_password)
+        if result:
+            return {"detail": "Password successfully updated"}
+        else:
+            raise ...
