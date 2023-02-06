@@ -13,7 +13,8 @@ from src.services import (
     RatingService,
     UserService,
     PeopleService,
-    GenreService
+    GenreService,
+    FavoriteService
 )
 
 settings = get_setting()
@@ -41,14 +42,22 @@ class Container(containers.DeclarativeContainer):
                                          session_factory=db.provided.session)
     user_repository = providers.Factory(UserRepository,
                                         session_factory=db.provided.session)
+    genre_repository = providers.Factory(GenresRepository,
+                                         session_faqctory=db.provided.session)
+    people_repository = providers.Factory(PeopleRepository,
+                                          session_factory=db.provided.session)
 
     auth_service = providers.Factory(AuthService,
                                      user_repository=user_repository)
     rate_service = providers.Factory(RatingService,
                                      movie_repository=MovieRepository)
-    genre_service = providers.Factory(GenreService)
+    genre_service = providers.Factory(GenreService,
+                                      genre_repository=genre_repository)
     movie_service = providers.Factory(MovieService,
                                       movie_repository=movie_repository)
-    people_service = providers.Factory(PeopleService)
+    people_service = providers.Factory(PeopleService,
+                                       people_repository=people_repository)
     user_service = providers.Factory(UserService,
                                      user_repository=user_repository)
+    favorite_service = providers.Factory(FavoriteService,
+                                         movie_repository=movie_repository)
