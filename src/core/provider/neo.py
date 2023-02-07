@@ -6,21 +6,24 @@ from neo4j import Session
 
 class Neo4jConnection:
 
-    def __init__(self, uri, user, pwd):
+    def __init__(self, user, pwd, uri=None, host=None, port=None):
         self.__uri = uri
         self.__user = user
         self.__pwd = pwd
         self.__driver = None
+        self._host = host
+        self._port = port
         self._session_factory = None
-        self.ssc = False
-        self.trusted_ca = False
-        self.use_neo4j_scheme = True
+        self._ssc = False
+        self._trusted_ca = False
+        self._use_neo4j_scheme = "neo4j"
         try:
-            self.__driver = GraphDatabase.driver(self.get_uri(
-                self.__uri,
-                self.ssc,
-                self.trusted_ca,
-                self.use_neo4j_scheme),
+            self.__driver = GraphDatabase.driver(
+                self.__uri if self.__uri else self.get_uri(host=self._host,
+                                                           ssc=self._ssc,
+                                                           trusted_ca=self._trusted_ca,
+                                                           use_neo4j_scheme=self._use_neo4j_scheme,
+                                                           port=self._port),
                 auth=(self.__user, self.__pwd))
             self._session_factory = self.__driver.session()
 
@@ -43,6 +46,7 @@ class Neo4jConnection:
         :return: uri
         """
         scheme = "neo4j" if use_neo4j_scheme else "bolt"
+        host = host if host else "127.0.0.1"
 
         # Only certificates signed by CA.
         encryption_scheme = ""
