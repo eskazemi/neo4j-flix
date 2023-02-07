@@ -106,3 +106,51 @@ class UserRepository(BaseRepository):
                 return False
             else:
                 return True
+
+    def get_info_user(self, user_id):
+        # Write Cypher query and run against the database.
+
+        query = "MATCH (user:User) WHERE user.id = $user_id RETURN user"
+
+        with self.session_factory() as session:
+            user_in_db = session.run(query=query,
+                                     parameters={"user_id": user_id})
+            try:
+                user_data = user_in_db.data()[0]["user"]
+            except Exception as e:
+                raise BadRequestError(
+                    detail=f"Operation not permitted, user with id {user_id} doesn't exists.",
+                    headers={"WWW-Authenticate": "Bearer"}
+                )
+            return User(**user_data)
+
+    def update(self, attributes, user_id):
+        for k in attributes:
+            if k == "hashed_password":
+                raise BadRequestError(
+                    detail="Operation not permitted, cannot update password with this method.",
+                    headers={"WWW-Authenticate": "Bearer"}
+                )
+
+        if attributes:
+            unpacked_attributes = (
+                    "SET " + ", ".join(
+                f"user.{key}=\"{value}\"" for (key, value) in attributes.items()
+                if
+                value)
+            )
+        else:
+            unpacked_attributes = ""
+
+        """Execute Cypher query to reset the hashed_password attribute."""
+        cypher_update_user = f"MATCH (user: User) WHERE user.id = $user_id {unpacked_attributes} RETURN user"
+
+        with self.session_factory() as session:
+            updated_user = session.run(
+                query=cypher_update_user,
+                parameters={"user_id": user_id}
+            )
+            user_data = updated_user.data()[0]["user"]
+
+        user = User(**user_data)
+        return user
