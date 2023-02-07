@@ -24,15 +24,15 @@ class UserSignIn(BaseModel):
     password: str
 
 
+class UserSignUp(UserSignIn):
+    name: str
+
+
 class UserSignInResponse(BaseModel):
     access_token: str
     token_type: str
     expired_in: int
     user_id: str
-
-
-class UserSignUp(UserSignIn):
-    name: str
 
 
 class UserResetPassword(BaseModel):
