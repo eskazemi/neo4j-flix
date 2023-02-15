@@ -23,11 +23,11 @@ settings = get_setting()
 class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
         modules=[
-            "src.core.genre.router",
-            "src.core.movie.router",
-            "src.core.rating.router",
-            "src.core.user.router",
-            "src.core.auth.router",
+            "src.core.api.genre",
+            "src.core.api.movie",
+            "src.core.api.account",
+            "src.core.api.people",
+            "src.core.api.auth",
             "src.core.dependencies",
         ]
     )
