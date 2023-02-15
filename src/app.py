@@ -1,7 +1,20 @@
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
+from fastapi.middleware import Middleware
+from fastapi.middleware.cors import CORSMiddleware
 
 # ------------------------------------app -----------------------------------
+
+
+middleware = [
+    Middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"]
+    )
+]
 
 app = FastAPI(
     title="recommendations sandbox",
@@ -9,8 +22,10 @@ app = FastAPI(
     docs_url='/api/docs',
     redoc_url='/api/redoc',
     openapi_url='/api/openapi.json',
+    middleware=middleware,
     debug=True
 )
+
 
 
 def custom_openapi():

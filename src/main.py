@@ -1,17 +1,6 @@
-from src.urls import api_router
-from fastapi.middleware.cors import CORSMiddleware
+from src.api.routes import api_router
 from src.app import app
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
-# ###########EndCROS###############
 
 @app.on_event("startup")
 async def on_app_start():
