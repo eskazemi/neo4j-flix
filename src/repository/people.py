@@ -1,7 +1,7 @@
 from typing import Callable
 from contextlib import AbstractContextManager
 from neo4j import Session
-from base_repository import BaseRepository
+from src.repository.base_repository import BaseRepository
 
 
 class PeopleRepository(BaseRepository):
