@@ -11,13 +11,13 @@ from fastapi import (
     Depends,
 )
 
-account_routes = APIRouter(
+account_router = APIRouter(
     prefix="/account",
     tags=["account"],
 )
 
 
-@account_routes.get('/favorites')
+@account_router.get('/favorites')
 @inject
 def get_favorites(user_id: str,
                   skip: int = 0,
@@ -34,7 +34,7 @@ def get_favorites(user_id: str,
     # return jsonify(output)
 
 
-@account_routes.post('/favorites/<movie_id>')
+@account_router.post('/favorites/<movie_id>')
 @inject
 def add_favorite(movie_id, user_id, service: FavoriteService = Depends(
     Provide[Container.auth_service])):
@@ -47,7 +47,7 @@ def add_favorite(movie_id, user_id, service: FavoriteService = Depends(
     # return jsonify(output)
 
 
-@account_routes.delete('/favorites/<movie_id>')
+@account_router.delete('/favorites/<movie_id>')
 @inject
 def delete_favorite(movie_id, user_id, service: FavoriteService = Depends(
     Provide[Container.auth_service])):
@@ -60,7 +60,7 @@ def delete_favorite(movie_id, user_id, service: FavoriteService = Depends(
     # return jsonify(output)
 
 
-@account_routes.post('/ratings/<movie_id>')
+@account_router.post('/ratings/<movie_id>')
 @inject
 def save_rating(movie_id, rating: int = Query(...), service: RatingService = Depends(
     Provide[Container.auth_service])):

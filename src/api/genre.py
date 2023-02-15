@@ -10,13 +10,13 @@ from fastapi import (
     Depends,
 )
 
-genre_routes = APIRouter(
+genre_router = APIRouter(
     prefix="/genre",
     tags=["genre"],
 )
 
 
-@genre_routes.get('/')
+@genre_router.get('/')
 @inject
 def get_index(service: GenreService = Depends(
     Provide[Container.genre_service])):
@@ -29,7 +29,7 @@ def get_index(service: GenreService = Depends(
     # return jsonify(output)
 
 
-@genre_routes.get('/{name}/')
+@genre_router.get('/{name}/')
 @inject
 def get_genre(name: str, service: GenreService = Depends(
     Provide[Container.genre_service])):
@@ -40,7 +40,7 @@ def get_genre(name: str, service: GenreService = Depends(
     # return jsonify(output)
 
 
-@genre_routes.get('/<name>/movies')
+@genre_router.get('/<name>/movies')
 @inject
 def get_genre_movies(name, sort: str = "title",
                      order: str = 'ASC',

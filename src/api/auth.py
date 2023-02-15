@@ -17,20 +17,20 @@ from src.models.user import (
 )
 
 _tag_base = ["auth"]
-router = APIRouter(
+auth_router = APIRouter(
     prefix="/auth",
     tags=["auth"],
 )
 
 
-@router.post("/sign-in", response_model=UserSignInResponse)
+@auth_router.post("/sign-in", response_model=UserSignInResponse)
 @inject
 async def sign_in(user_info: UserSignIn, service: AuthService = Depends(
                     Provide[Container.auth_service])):
     return service.sign_in(user_info)
 
 
-@router.post("/sign-up", response_model=User)
+@auth_router.post("/sign-up", response_model=User)
 @inject
 async def sign_up(new_user: UserSignUp,
                   service: AuthService = Depends(
@@ -38,7 +38,7 @@ async def sign_up(new_user: UserSignUp,
     return service.sign_up(new_user)
 
 
-@router.post("/reset-password", )
+@auth_router.post("/reset-password", )
 @inject
 async def reset_password(user_reset_pass: UserResetPassword,
                          service: AuthService = Depends(
