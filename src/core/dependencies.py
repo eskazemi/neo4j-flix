@@ -10,7 +10,7 @@ from dependency_injector.wiring import (
 )
 from src.core.container import Container
 from fastapi import Depends
-from src.user.service import UserService
+from src.services.user import UserService
 from src.core.exceptions import AuthError
 from passlib.context import CryptContext
 from jose import (
@@ -19,7 +19,7 @@ from jose import (
 )
 
 from src.config import get_setting
-from src.user.models import User
+from src.models.user import User
 
 settings = get_setting()
 
